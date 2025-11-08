@@ -49,11 +49,7 @@ env/
 .env
 
 # Data files
-*.csv
 *.dat
-*.pkl
-*.npy
-*.h5
 
 # Model files
 *.model
