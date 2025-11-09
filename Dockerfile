@@ -27,7 +27,7 @@ RUN mkdir -p models
 
 # Copy only necessary files
 COPY api_service.py .
-COPY models/best_*.joblib ./models/
+COPY models/best_rf.joblib ./models/
 
 # Ensure correct permissions
 RUN chown -R appuser:appuser /app

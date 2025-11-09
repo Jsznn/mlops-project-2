@@ -23,15 +23,13 @@ models = {}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        # Load models during startup
-        logger.info("Loading models...")
+        # Load RandomForest model during startup
+        logger.info("Loading RandomForest model...")
         models['best_rf'] = joblib.load('models/best_rf.joblib')
-        logger.info("Loaded best_rf model")
-        models['best_lr'] = joblib.load('models/best_lr.joblib')
-        logger.info("Loaded best_lr model")
+        logger.info("Successfully loaded RandomForest model")
         yield
     except Exception as e:
-        logger.error(f"Error loading models: {str(e)}")
+        logger.error(f"Error loading model: {str(e)}")
         raise
     finally:
         # Clean up resources during shutdown
@@ -250,7 +248,7 @@ def read_root():
     """Root endpoint"""
     return {
         "message": "Bank Marketing ML Models API",
-        "models_available": ["best_rf", "best_lr"],
+        "models_available": list(models.keys()),
         "docs_url": "/docs"
     }
 
@@ -259,9 +257,9 @@ def predict(model_name: str, customer_data: CustomerData):
     """Make prediction using specified model"""
     logger.info(f"Received prediction request for model: {model_name}")
     
-    if model_name not in ["best_rf", "best_lr"]:
+    if model_name != "best_rf":
         logger.error(f"Invalid model name requested: {model_name}")
-        raise HTTPException(status_code=400, detail="Model must be 'best_rf' or 'best_lr'")
+        raise HTTPException(status_code=400, detail="Currently only 'best_rf' model is supported")
     
     try:
         # Preprocess input

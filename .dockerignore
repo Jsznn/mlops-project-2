@@ -37,9 +37,8 @@ ENV/
 *.csv
 !data/*.csv
 
-# Include only model files
+# Include only RandomForest model
 !models/best_rf.joblib
-!models/best_lr.joblib
 
 # Exclude MLflow artifacts since we're using local models
 mlruns/
