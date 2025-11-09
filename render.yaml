@@ -1,0 +1,26 @@
+# Render manifest for automatic deployments
+# See https://render.com/docs/deploy-github for details
+# This manifest defines a single web service built from the Dockerfile in this repo.
+services:
+  - type: web
+    name: mlops-project-2-api
+    env: docker
+    repo: https://github.com/Jsznn/mlops-project-2
+    branch: master
+    dockerfilePath: Dockerfile
+    plan: starter
+    # Render exposes the service on $PORT; startCommand below uses $PORT
+    startCommand: "uvicorn api_service:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /
+    buildCommand: ""
+    envVars:
+      # Add any environment variables required by your app here or set them via the Render dashboard
+      - key: MLFLOW_TRACKING_URI
+        scope: RUN_TIME
+      - key: AWS_ACCESS_KEY_ID
+        scope: RUN_TIME
+      - key: AWS_SECRET_ACCESS_KEY
+        scope: RUN_TIME
+      - key: MLFLOW_S3_ENDPOINT_URL
+        scope: RUN_TIME
+    autoDeploy: true
