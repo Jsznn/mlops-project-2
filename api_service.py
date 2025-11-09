@@ -22,13 +22,20 @@ models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Load models during startup
-    logger.info("Loading models...")
-    models['best_rf'] = joblib.load('models/best_rf.joblib')
-    models['best_lr'] = joblib.load('models/best_lr.joblib')
-    yield
-    # Clean up resources during shutdown
-    models.clear()
+    try:
+        # Load models during startup
+        logger.info("Loading models...")
+        models['best_rf'] = joblib.load('models/best_rf.joblib')
+        logger.info("Loaded best_rf model")
+        models['best_lr'] = joblib.load('models/best_lr.joblib')
+        logger.info("Loaded best_lr model")
+        yield
+    except Exception as e:
+        logger.error(f"Error loading models: {str(e)}")
+        raise
+    finally:
+        # Clean up resources during shutdown
+        models.clear()
 
 # Initialize FastAPI app
 app = FastAPI(

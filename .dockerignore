@@ -37,12 +37,12 @@ ENV/
 *.csv
 !data/*.csv
 
-# Include only specific MLflow and model files
-!mlruns/*/meta.yaml
-!mlruns/*/models/*/meta.yaml
-!mlruns/*/models/*/version-*/
+# Include only model files
 !models/best_rf.joblib
 !models/best_lr.joblib
+
+# Exclude MLflow artifacts since we're using local models
+mlruns/
 
 # Docker
 .docker/

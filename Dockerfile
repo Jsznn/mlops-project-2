@@ -22,15 +22,12 @@ RUN pip install --no-cache-dir -r requirements.txt \
 RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app
 
-# Create directories for models and MLflow
-RUN mkdir -p models mlruns
+# Create models directory
+RUN mkdir -p models
 
 # Copy only necessary files
 COPY api_service.py .
 COPY models/best_*.joblib ./models/
-COPY mlruns/*/meta.yaml ./mlruns/
-COPY mlruns/*/models/*/meta.yaml ./mlruns/models/
-COPY mlruns/*/models/*/version-*/ ./mlruns/models/version/
 
 # Ensure correct permissions
 RUN chown -R appuser:appuser /app
