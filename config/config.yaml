@@ -1,0 +1,20 @@
+paths:
+  data: "data"
+  models: "models"
+  raw_dataset: "data/dataset.csv"
+  preprocessed_data: "data/preprocessed.csv"
+  model_rf: "models/best_rf.joblib"
+  model_lr: "models/best_lr.joblib"
+
+mlflow:
+  experiment_name: "mlops_project_2"
+  tracking_uri: "mlruns"
+
+training:
+  test_size: 0.25
+  random_state: 23
+  max_iter: 500
+  class_weight: "balanced"
+
+preprocessing:
+  mean_euribor_rate: 4.857 # Precalculated mean from training data

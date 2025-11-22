@@ -1,43 +1,22 @@
-# Use Python 3.11 slim as base image
-FROM python:3.11-slim
+FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/* && \
-    pip install --no-cache-dir pip --upgrade
-
-# Copy only requirements first for better layer caching
+# Copy requirements first for caching
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies in a single layer
-RUN pip install --no-cache-dir -r requirements.txt \
-    && rm -rf /root/.cache/pip/*
+# Copy configuration
+COPY config/ config/
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
+# Copy source code
+COPY src/ src/
 
-# Create models directory
-RUN mkdir -p models
+# Copy models (if they exist locally, otherwise they might be mounted or pulled)
+COPY models/ models/
 
-# Copy only necessary files
-COPY api_service.py .
-COPY models/best_rf.joblib ./models/
-
-# Ensure correct permissions
-RUN chown -R appuser:appuser /app
-
-# Switch to non-root user
-USER appuser
-
-# Expose a default port (Render will provide $PORT at runtime)
+# Expose port
 EXPOSE 8000
 
-# Command to run the FastAPI application. Use the PORT env var when available (Render provides $PORT).
-# Use a shell form so environment variable expansion works.
-CMD ["sh", "-c", "uvicorn api_service:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Run the API
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
